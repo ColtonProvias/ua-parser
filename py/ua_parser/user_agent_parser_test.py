@@ -30,7 +30,7 @@ import re
 import unittest
 import yaml
 
-import user_agent_parser
+from . import user_agent_parser
 
 TEST_RESOURCES_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                   '../../test_resources')
@@ -91,13 +91,13 @@ class ParseTest(unittest.TestCase):
 
         result = user_agent_parser.Parse(user_agent_string)
         self.assertEqual(result, expected,
-            u"UA: {0}\n expected<{1}> != actual<{2}>".format(user_agent_string, expected, result))
+            "UA: {0}\n expected<{1}> != actual<{2}>".format(user_agent_string, expected, result))
 
     # Make a YAML file for manual comparsion with pgts_browser_list-orig.yaml
     def makePGTSComparisonYAML(self):
         import codecs
         outfile = codecs.open('outfile.yaml', 'w', 'utf-8')
-        print >> outfile, "test_cases:"
+        print("test_cases:", file=outfile)
 
         yamlFile = open(os.path.join(TEST_RESOURCES_DIR,
                                      'pgts_browser_list.yaml'))
@@ -114,11 +114,11 @@ class ParseTest(unittest.TestCase):
 
             # Escape any double-quotes in the UA string
             user_agent_string = re.sub(r'"', '\\"', user_agent_string)
-            print >> outfile, '    - user_agent_string: "' + unicode(user_agent_string) + '"' + "\n" +\
+            print('    - user_agent_string: "' + str(user_agent_string) + '"' + "\n" +\
                               '      family: "' + family + "\"\n" +\
                               "      major: " + ('' if (major is None) else "'" + major + "'") + "\n" +\
                               "      minor: " + ('' if (minor is None) else "'" + minor + "'") + "\n" +\
-                              "      patch: " + ('' if (patch is None) else "'" + patch + "'")
+                              "      patch: " + ('' if (patch is None) else "'" + patch + "'"), file=outfile)
         outfile.close()
 
     # Run a set of test cases from a YAML file
@@ -143,7 +143,7 @@ class ParseTest(unittest.TestCase):
             result = {}
             result = user_agent_parser.ParseUserAgent(user_agent_string, **kwds)
             self.assertEqual(result, expected,
-                    u"UA: {0}\n expected<{1}, {2}, {3}, {4}> != actual<{5}, {6}, {7}, {8}>".format(\
+                    "UA: {0}\n expected<{1}, {2}, {3}, {4}> != actual<{5}, {6}, {7}, {8}>".format(\
                             user_agent_string,
                             expected['family'], expected['major'], expected['minor'], expected['patch'],
                             result['family'], result['major'], result['minor'], result['patch']))
@@ -171,7 +171,7 @@ class ParseTest(unittest.TestCase):
 
             result = user_agent_parser.ParseOS(user_agent_string, **kwds)
             self.assertEqual(result, expected,
-                    u"UA: {0}\n expected<{1} {2} {3} {4} {5}> != actual<{6} {7} {8} {9} {10}>".format(\
+                    "UA: {0}\n expected<{1} {2} {3} {4} {5}> != actual<{6} {7} {8} {9} {10}>".format(\
                             user_agent_string,
                             expected['family'],
                             expected['major'],
@@ -203,7 +203,7 @@ class ParseTest(unittest.TestCase):
 
             result = user_agent_parser.ParseDevice(user_agent_string, **kwds)
             self.assertEqual(result, expected,
-                u"UA: {0}\n expected<{1}> != actual<{2}>".format(
+                "UA: {0}\n expected<{1}> != actual<{2}>".format(
                     user_agent_string,
                     expected['family'],
                     result['family']))
